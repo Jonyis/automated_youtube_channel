@@ -61,16 +61,14 @@ def __get_channel_data(clipList: List[ClipData],
 
         roundDuration = round(duration)
         timeStamp = str(int(roundDuration / 60)).zfill(2) + ':' + str(int(roundDuration % 60)).zfill(2)
-        channelList_ = {}
 
-        if not any(d["channel"] == postInfo.channel for d in listOfChannels):
+        if not any(d.channel_name == postInfo.channel for d in listOfChannels):
             # If channel not yet present add it
-            channelList_["channel"] = postInfo.channel
-            channelList_["timeStamp"] = ' ' + timeStamp
-            listOfChannels.append(channelList_)
+            channelData = ChannelTimeStampData(postInfo.channel, timeStamp)
+            listOfChannels.append(channelData)
         else:
             # If channel is present add current timestamp to it
-            next(item for item in listOfChannels if item["channel"] == postInfo.channel)["timeStamp"] += ' ' + timeStamp
+            next(item for item in listOfChannels if item.channel_name == postInfo.channel).add_time_stamp(timeStamp)
 
         duration += clip.duration
         i += 1
@@ -78,14 +76,12 @@ def __get_channel_data(clipList: List[ClipData],
         if duration >= max_video_duration:
             break
 
-    channelString = "Streamers featured in this video:\n"
-    for channel in listOfChannels:
-        channelString = channelString + channel["channel"]
-        if time_stamping:
-            channelString += channel["timeStamp"]
-        channelString += "\n"
+    channel_string = "Streamers featured in this video:\n"
+    for channel_data in listOfChannels:
+        channel_string += str(channel_data)
+        channel_string += "\n"
 
-    return channelString
+    return channel_string
 
 
 def __get_clip_data(clipList: List[ClipData],
@@ -100,13 +96,33 @@ def __get_clip_data(clipList: List[ClipData],
         clip = VideoFileClip(clipInfo.path)
         roundDuration = round(duration)
         timeStamp = str(int(roundDuration / 60)).zfill(2) + ':' + str(int(roundDuration % 60)).zfill(2)
-        clipName = clipInfo.title
-        if '<3' in clipName:
-            clipName = clipName.replace('<3', '')
-        if '>' in clipName:
-            clipName = clipName.replace('>', '')
+        clipName = clean_clip_title(clipInfo.title)
         clipString += clipName + " " + timeStamp + "\n"
         duration += clip.duration
         clip.close()
 
     return clipString
+
+
+def clean_clip_title(clip_title):
+    if '<3' in clip_title:
+        clip_title = clip_title.replace('<3', '')
+    if '>' in clip_title:
+        clip_title = clip_title.replace('>', '')
+    return clip_title
+
+
+class ChannelTimeStampData:
+
+    def __init__(self, channel_name: str, initial_time_stamp: str):
+        self.channel_name = channel_name
+        self.time_stamps = [initial_time_stamp]
+
+    def add_time_stamp(self, time_stamp):
+        self.time_stamps.append(time_stamp)
+
+    def __str__(self):
+        channel_string = self.channel_name + ' '
+        for time_stamp in self.time_stamps:
+            channel_string += time_stamp + ' '
+        return channel_string
