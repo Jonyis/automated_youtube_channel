@@ -24,12 +24,12 @@ class ClipData:
 
     def is_valid(self,
                  reference_date: datetime,
-                 max_time_range: int,
+                 max_time_apart_from_reference_date: int,
                  min_time_apart: int,
                  already_found_clips: List[ClipData]) -> bool:
 
         # Check if clip was posted within desired range from specified date
-        if (reference_date - self.date_created).total_seconds() > max_time_range:
+        if (reference_date - self.date_created).total_seconds() > max_time_apart_from_reference_date:
             return False
 
         # If clips from the same channel were created less than X seconds apart we assume they are the same clip

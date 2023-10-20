@@ -44,8 +44,8 @@ class ClipGetter:
                                                                    max_clip_count=postLimit,
                                                                    language=language,
                                                                    previous_clips=compareList,
-                                                                   timeLimit=timeLimit,
-                                                                   dateCheck=reference_date,
+                                                                   max_time_apart_from_reference_date=timeLimit,
+                                                                   reference_date=reference_date,
                                                                    min_view_count=minViews,
                                                                    max_clip_duration=maxDuration,
                                                                    last_received_cursor=cursor)
@@ -72,8 +72,8 @@ class ClipGetter:
                                                                    max_clip_count=postLimit,
                                                                    language=language,
                                                                    previous_clips=already_found_clips + list_of_posts,
-                                                                   timeLimit=timeLimit,
-                                                                   dateCheck=dateCheck,
+                                                                   max_time_apart_from_reference_date=timeLimit,
+                                                                   reference_date=dateCheck,
                                                                    min_view_count=minViews,
                                                                    max_clip_duration=maxDuration,
                                                                    last_received_cursor=cursor)
