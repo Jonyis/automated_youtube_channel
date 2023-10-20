@@ -17,6 +17,7 @@ class TwitchScraper:
     def get_clips(self,
                   channel=None,
                   game=None,
+                  clip_id=None,
                   clips_to_get_count=1,
                   max_clip_count=100,
                   language=None,
@@ -40,6 +41,7 @@ class TwitchScraper:
             try:
                 response = self.__twitch.get_twitch_clips(game_id=game_id,
                                                           broadcaster_name=channel,
+                                                          clip_id=clip_id,
                                                           cursor=last_cursor,
                                                           started_at=start_date,
                                                           ended_at=end_date,
