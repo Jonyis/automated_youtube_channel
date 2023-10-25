@@ -78,7 +78,9 @@ class TwitchScraper:
                                     clip["title"],
                                     clip["url"],
                                     self.__get_clip_real_time(clip),
-                                    clip["thumbnail_url"])
+                                    clip["thumbnail_url"],
+                                    clip["view_count"],
+                                    clip["language"])
                 if not clipInfo.is_valid(reference_date,
                                          max_time_apart_from_reference_date,
                                          min_time_apart,

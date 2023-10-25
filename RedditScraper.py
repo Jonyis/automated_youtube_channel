@@ -75,7 +75,9 @@ class RedditScraper:
                                      clip_info["title"],
                                      clip_info["url"],
                                      self.__get_clip_real_time(clip_info),
-                                     clip_info["thumbnail_url"])
+                                     clip_info["thumbnail_url"],
+                                     clip_info["view_count"],
+                                     clip_info["language"])
 
                 if not clip_data.is_valid(dateCheck, maxTimeDelta, 2*60, compareList+listOfPosts):
                     continue
