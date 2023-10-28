@@ -1,4 +1,3 @@
-import datetime
 from typing import List
 
 from moviepy.audio.fx.audio_fadein import audio_fadein
@@ -6,12 +5,12 @@ from moviepy.audio.fx.audio_fadeout import audio_fadeout
 from moviepy.audio.fx.audio_normalize import audio_normalize
 from moviepy.video.compositing.concatenate import concatenate, concatenate_videoclips
 from moviepy.video.compositing.transitions import crossfadein
-from moviepy.video.fx.crop import crop
 from moviepy.video.fx.fadein import fadein
 from moviepy.video.fx.fadeout import fadeout
 from moviepy.video.fx.resize import resize
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
+import ShortVideoMaker
 from ClipData import ClipData
 
 
@@ -40,7 +39,7 @@ def make_video_from_clips(final_video_path: str,
 
         # crop to "YouTube shorts" size
         if video_is_short:
-            vid = crop(vid, x_center=vid.w / 2, y_center=vid.h / 2, width=vid.h * (float(9) / 16), height=vid.h)
+            vid = ShortVideoMaker.make_short_default(vid)
             # TODO: improve shorts cropping
 
         # Adds the video to our list and if total duration is above 10 minutes we break
@@ -74,13 +73,12 @@ def make_video_from_clips(final_video_path: str,
             vid = resize(vid, (1920, 1080))
 
         duration += vid.duration
-        clips[len(clips) - 1] = concatenate([clips[len(clips) - 1],
-                                             crossfadein(vid, 1)], padding=-1, method="compose")
+        clips[-1] = concatenate([clips[-1], crossfadein(vid, 1)], padding=-1, method="compose")
 
     # If no outro fades out the last clip
     elif clips_should_fade:
-        clips[len(clips) - 1] = fadeout(clips[len(clips) - 1], 2.5)
-        clips[len(clips) - 1] = audio_fadeout(clips[len(clips) - 1], 2.5)
+        clips[-1] = fadeout(clips[-1], 2.5)
+        clips[-1] = audio_fadeout(clips[-1], 2.5)
 
     print('Fusing', len(clips), 'clips with total duration', int(duration / 60), 'minutes and', int(duration % 60),
           'seconds')
@@ -97,6 +95,26 @@ def make_video_from_clips(final_video_path: str,
 
     for clip in clips:
         clip.close()
+
+    vid.close()
+    return final_video_path
+
+
+def make_short_single_video(final_video_path: str,
+                            clip: ClipData):
+    # Turns clip into videoFileClip
+    vid = VideoFileClip(clip.path)
+
+    # Make video into short format
+    vid = ShortVideoMaker.make_short_blurry_background(vid)
+
+    try:
+        vid.write_videofile(final_video_path, codec='h264_nvenc', fps=30, preset='ultrafast', threads=4)
+        print("")
+        print("Video created successfully")
+    except:
+        print("Failed during the making of the video")
+        print("")
 
     vid.close()
     return final_video_path
