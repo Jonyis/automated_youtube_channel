@@ -13,7 +13,8 @@ class ClipData:
                  date_created: datetime,
                  thumbnail_url: str,
                  view_count: int,
-                 language: str):
+                 language: str,
+                 game: str):
         self.channel = "https://twitch.tv/" + creator_name
         self.slug = slug
         self.title = title
@@ -22,6 +23,7 @@ class ClipData:
         self.thumbnail_url = thumbnail_url
         self.view_count = view_count
         self.language = language
+        self.game = game
         self.path = None
 
     def __repr__(self):

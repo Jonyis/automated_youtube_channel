@@ -75,3 +75,10 @@ class TwitchAPI:
             return requests.get(url, params={'name': game_name}, headers=self.headers).json()['data'][0]["id"]
         except:  # TODO: throw specific exception
             raise SystemExit()
+
+    def get_twitch_games_name_by_id(self, game_id):
+        url = 'https://api.twitch.tv/helix/games'
+        try:
+            return requests.get(url, params={'id': game_id}, headers=self.headers).json()['data'][0]["name"]
+        except:  # TODO: throw specific exception
+            raise SystemExit()
