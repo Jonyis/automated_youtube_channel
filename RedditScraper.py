@@ -77,7 +77,8 @@ class RedditScraper:
                                      self.__get_clip_real_time(clip_info),
                                      clip_info["thumbnail_url"],
                                      clip_info["view_count"],
-                                     clip_info["language"])
+                                     clip_info["language"],
+                                     self.__twitch.get_twitch_games_name_by_id(clip_info["game_id"]))
 
                 if not clip_data.is_valid(dateCheck, maxTimeDelta, 2*60, compareList+listOfPosts):
                     continue
