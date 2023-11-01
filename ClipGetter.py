@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from RedditScraper import RedditScraper
 from TwitchScraper import TwitchScraper
@@ -31,7 +31,7 @@ class ClipGetter:
                                    max_clip_count=100,
                                    language=None,
                                    previous_clips=[],
-                                   max_time_apart_from_reference_date=86400,
+                                   max_time_apart_from_reference_date=timedelta(weeks=1),
                                    reference_date=datetime.now(),
                                    min_view_count=0,
                                    max_clip_duration=120,
@@ -59,7 +59,7 @@ class ClipGetter:
                                        max_clip_count=100,
                                        language='en',
                                        already_found_clips=[],
-                                       max_time_apart_from_reference_date=86400,
+                                       max_time_apart_from_reference_date=timedelta(weeks=1),
                                        reference_date=None,
                                        min_view_count=0,
                                        max_clip_duration=120,
@@ -90,7 +90,7 @@ class ClipGetter:
                               max_clip_count=100,
                               language='en',
                               already_found_clips=[],
-                              max_time_apart_from_reference_date=86400,
+                              max_time_apart_from_reference_date=timedelta(weeks=1),
                               reference_date=None,
                               min_view_count=0,
                               max_clip_duration=120,
