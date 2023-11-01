@@ -37,12 +37,11 @@ def make_video_from_clips(final_video_path: str,
         if vid.w != 1920 or vid.h != 1080:
             vid = resize(vid, (1920, 1080))
 
-        # crop to "YouTube shorts" size
+        # crop to "YouTube shorts" format
         if video_is_short:
-            vid = ShortVideoMaker.make_short_default(vid)
-            # TODO: improve shorts cropping
+            vid = ShortVideoMaker.make_short_blurry_background(vid, clip.game)
 
-        # Adds the video to our list and if total duration is above 10 minutes we break
+        # Adds the video to our list and if total duration is above X minutes we break
         duration += vid.duration
         clips.append(vid)
         if duration >= max_video_duration:
@@ -86,7 +85,7 @@ def make_video_from_clips(final_video_path: str,
     vid = concatenate_videoclips(clips)
 
     try:
-        vid.write_videofile(final_video_path, codec='libx264', fps=30, preset='ultrafast', threads=4)
+        vid.write_videofile(final_video_path, codec='h264_nvenc', fps=30, threads=4)
         print("")
         print("Video created successfully")
     except:
@@ -106,7 +105,7 @@ def make_short_single_video(final_video_path: str,
     vid = VideoFileClip(clip.path)
 
     # Make video into short format
-    vid = ShortVideoMaker.make_short_blurry_background(vid)
+    vid = ShortVideoMaker.make_short_blurry_background(vid, clip.game)
 
     try:
         vid.write_videofile(final_video_path, codec='h264_nvenc', fps=30, threads=4)
