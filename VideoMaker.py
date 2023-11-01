@@ -109,7 +109,7 @@ def make_short_single_video(final_video_path: str,
     vid = ShortVideoMaker.make_short_blurry_background(vid)
 
     try:
-        vid.write_videofile(final_video_path, codec='h264_nvenc', fps=30, preset='ultrafast', threads=4)
+        vid.write_videofile(final_video_path, codec='h264_nvenc', fps=30, threads=4)
         print("")
         print("Video created successfully")
     except:

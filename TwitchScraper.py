@@ -22,7 +22,7 @@ class TwitchScraper:
                   max_clip_count=100,
                   language=None,
                   previous_clips=[],
-                  max_time_apart_from_reference_date=86400,
+                  max_time_apart_from_reference_date=datetime.timedelta(weeks=1),
                   reference_date=__DEFAULT_REFERENCE_DATE,
                   min_view_count=0,
                   max_clip_duration=120,

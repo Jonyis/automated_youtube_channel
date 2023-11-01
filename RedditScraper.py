@@ -21,7 +21,7 @@ class RedditScraper:
                   topOfWhat=None,
                   minimumScore=0,
                   compareList=[],
-                  maxTimeDelta=0):
+                  maxTimeDelta=datetime.timedelta(weeks=1)):
         listOfPosts = []
         i = 0
         j = 0
@@ -32,7 +32,7 @@ class RedditScraper:
         dateCheck = datetime.datetime.strptime(date + ' ' + time, '%Y-%m-%d %H:%M:%S.%f') - datetime.timedelta(days=0,
                                                                                                                hours=0)
         print("Looking from posts begining at " + (
-                dateCheck - datetime.timedelta(days=0, hours=0, minutes=0, seconds=maxTimeDelta)).strftime(
+                dateCheck - maxTimeDelta).strftime(
             '%Y-%m-%d %H:%M:%S.%f') + " and ending at " + dateCheck.strftime('%Y-%m-%d %H:%M:%S.%f'))
         # search('selftext:"clips.twitch.tv" OR url:"clips.twitch.tv"', sort='relevance', time_filter=topOfWhat,
         # limit=None)
@@ -48,7 +48,7 @@ class RedditScraper:
 
             totalSeconds = (dateCheck - datePosted).total_seconds()
 
-            if k >= minimumScore and maxTimeDelta > totalSeconds > 0:
+            if k >= minimumScore and maxTimeDelta.total_seconds() > totalSeconds > 0:
 
                 if n:
                     url = self.__url_exctractor(n.group(0))
