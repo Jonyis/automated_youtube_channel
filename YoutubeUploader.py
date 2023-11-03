@@ -29,7 +29,7 @@ def get_video_title(clipList: List[ClipData],
                     max_characters: int = 100) -> str:
     for clip in clipList:
         title = clip.title + " | " + title_suffix
-        if len(title) > max_characters:
+        if len(title) <= max_characters:
             return title
 
     return title_suffix
