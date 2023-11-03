@@ -26,20 +26,33 @@ class VideoData:
         return False
 
 
+def check_videos_for_duplicates(video_list: List[VideoData], previous_videos: List[VideoData] = None):
+    if previous_videos is None:
+        previous_videos = []
+    return do_check_videos_for_duplicates(video_list, previous_videos)
+
+
 @profile
-def check_videos_for_duplicates(video_list: List[VideoData]):
+def do_check_videos_for_duplicates(current_videos: List[VideoData], previous_videos: List[VideoData]):
     video_count = 0
+    total_videos = current_videos+previous_videos
     # For each video get hash and compare to other video hashes
-    for video1 in video_list[:-1]:
+    for video1 in current_videos:
+        if video_count >= len(current_videos):
+            break
         video1_frame_hashes = do_get_video_hash(video1)
-        for video2 in video_list[video_count + 1:]:
-            video2_frame_hashes = do_get_video_hash(video2)
-            if is_video_duplicate(video1_frame_hashes, video2_frame_hashes):
+        for video2 in total_videos[video_count + 1:]:
+            if video1 == video2:
                 print("removing video: " + video2.path)
-                video_list.remove(video2)
+                current_videos.remove(video2)
+            else:
+                video2_frame_hashes = do_get_video_hash(video2)
+                if is_video_duplicate(video1_frame_hashes, video2_frame_hashes):
+                    print("removing video: " + video2.path)
+                    current_videos.remove(video2)
         video_count += 1
 
-    return video_list
+    return current_videos
 
 
 @profile
