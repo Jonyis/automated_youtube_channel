@@ -158,8 +158,11 @@ def upload_youtube_video(youtube, options, video_path, total_videos, index):
 
     debug("Start upload: {0}".format(video_path))
     try:
-        video_id = upload_video.upload(youtube, video_path,
-                                       request_body, progress_callback=progress.callback,
+        video_id = upload_video.upload(youtube,
+                                       video_path,
+                                       request_body,
+                                       options.notify_subscribers,
+                                       progress_callback=progress.callback,
                                        chunksize=options.chunksize)
     finally:
         progress.finish()
@@ -272,6 +275,8 @@ def main(arguments):
                       default=1024 * 1024 * 8, help='Update file chunksize')
     parser.add_option('', '--open-link', dest='open_link', action='store_true',
                       help='Opens a url in a web browser to display the uploaded video')
+    parser.add_option('', '--stop-notify-subscribers', dest='notify_subscribers', action='store_false',
+                      help='If video should be sent to subscribers\'s feeds', default=True)
 
     options, args = parser.parse_args(arguments)
 
