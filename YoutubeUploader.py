@@ -11,17 +11,25 @@ def upload_video(video_path,
                  videoTitle,
                  dateToPost,
                  video_description,
-                 video_tags=None):
+                 video_tags=None,
+                 notify_subscribers=True):
     clientSecretPath = os.getcwd() + '/client_secret.json'
     credentialsFilePath = os.getcwd() + '/.youtube-upload-credentials.json'
     print(video_description)
     print(videoTitle)
     print(dateToPost)
+    upload_request = ["-t" + videoTitle,
+                      "--description=" + video_description,
+                      "--tags=" + video_tags,
+                      "--category=Gaming",
+                      "--client-secrets=" + clientSecretPath,
+                      "--credentials-file=" + credentialsFilePath,
+                      "--publish-at=" + dateToPost.strftime("%Y-%m-%dT%H:%M:%S.0Z"),
+                      video_path]
+    if not notify_subscribers:
+        upload_request += "--stop-notify-subscribers"
 
-    return youtube_upload.main(
-        ["-t" + videoTitle, "--description=" + video_description, "--tags=" + video_tags, "--category=Gaming",
-         "--client-secrets=" + clientSecretPath, "--credentials-file=" + credentialsFilePath,
-         "--publish-at=" + dateToPost.strftime("%Y-%m-%dT%H:%M:%S.0Z"), video_path])
+    return youtube_upload.main(upload_request)
 
 
 def get_video_title(clipList: List[ClipData],
