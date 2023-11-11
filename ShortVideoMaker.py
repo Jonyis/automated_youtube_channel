@@ -9,7 +9,7 @@ from skimage.filters import gaussian
 #    Values represent horizontal and vertical crop percentages respectively
 __RELEVANT_VIDEO_POSITION_BY_GAME = {
     "COUNTER-STRIKE: GLOBAL OFFENSIVE": (0.50, 0),
-    "COUNTER-STRIKE": (0.20, 0),
+    "COUNTER-STRIKE": (0.40, 0),
     "VALORANT": (0.45, 0)
 }
 # In case game is not in map get default value
@@ -67,8 +67,8 @@ def make_short_with_game_feed(clip: VideoFileClip, game) -> VideoFileClip:
                      y_center=int(game_feed_position[1]+(game_feed_position[3]/2)),
                      width=game_feed_position[2],
                      height=game_feed_position[3])
-    game_feed = resize(game_feed, background_vid.w * 0.75 / game_feed.w)\
-        .set_position(("center", int((3*background_vid.h + center_vid.h - game_feed.h * 2)/4)))
+    game_feed = resize(game_feed, background_vid.w * 0.75 / game_feed.w)
+    game_feed = game_feed.set_position(("center", int((3*background_vid.h + center_vid.h - game_feed.h * 2)/4)))
 
     result = CompositeVideoClip([background_vid, center_vid, game_feed])
     return result
