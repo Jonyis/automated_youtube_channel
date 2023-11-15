@@ -27,8 +27,7 @@ def upload_video(video_path,
                       "--publish-at=" + dateToPost.strftime("%Y-%m-%dT%H:%M:%S.0Z"),
                       video_path]
     if not notify_subscribers:
-        upload_request += "--stop-notify-subscribers"
-
+        upload_request.append("--stop-notify-subscribers")
     return youtube_upload.main(upload_request)
 
 
