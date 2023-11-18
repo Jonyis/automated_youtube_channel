@@ -84,13 +84,7 @@ def make_video_from_clips(final_video_path: str,
 
     vid = concatenate_videoclips(clips)
 
-    try:
-        vid.write_videofile(final_video_path, codec='h264_nvenc', fps=30, threads=4)
-        print("")
-        print("Video created successfully")
-    except:
-        print("Failed during the making of the video")
-        print("")
+    make_video(vid, final_video_path)
 
     for clip in clips:
         clip.close()
@@ -107,14 +101,18 @@ def make_short_single_video(final_video_path: str,
     # Make video into short format
     vid = ShortVideoMaker.make_short_blurry_background(vid, clip.game)
 
+    make_video(vid, final_video_path)
+
+    vid.close()
+    return final_video_path
+
+
+def make_video(video: VideoFileClip, path: str):
     try:
-        vid.write_videofile(final_video_path, codec='h264_nvenc', fps=30, threads=4)
+        video.write_videofile(path, codec='h264_nvenc', fps=30, threads=4)
         print("")
         print("Video created successfully")
     except:
         print("Failed during the making of the video")
         print("")
-
-    vid.close()
-    return final_video_path
 

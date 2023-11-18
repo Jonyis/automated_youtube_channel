@@ -35,13 +35,12 @@ def check_videos_for_duplicates(video_list: List[VideoData], previous_videos: Li
 @profile
 def do_check_videos_for_duplicates(current_videos: List[VideoData], previous_videos: List[VideoData]):
     video_count = 0
-    total_videos = current_videos+previous_videos
     # For each video get hash and compare to other video hashes
     for video1 in current_videos:
         if video_count >= len(current_videos):
             break
         video1_frame_hashes = do_get_video_hash(video1)
-        for video2 in total_videos[video_count + 1:]:
+        for video2 in current_videos[video_count + 1:] + previous_videos:
             if video1 == video2:
                 print("removing video: " + video2.path)
                 current_videos.remove(video2)

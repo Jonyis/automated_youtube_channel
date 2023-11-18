@@ -71,9 +71,11 @@ def __get_channel_data(clipList: List[ClipData],
 
         if not any(d.channel_name == postInfo.channel for d in listOfChannels):
             # If channel not yet present add it
-            channelData = ChannelTimeStampData(postInfo.channel, timeStamp)
-            listOfChannels.append(channelData)
-        else:
+            channel_data = ChannelTimeStampData(postInfo.channel)
+            if time_stamping:
+                channel_data.add_time_stamp(timeStamp)
+            listOfChannels.append(channel_data)
+        elif time_stamping:
             # If channel is present add current timestamp to it
             next(item for item in listOfChannels if item.channel_name == postInfo.channel).add_time_stamp(timeStamp)
 
@@ -121,9 +123,9 @@ def clean_clip_title(clip_title):
 
 class ChannelTimeStampData:
 
-    def __init__(self, channel_name: str, initial_time_stamp: str):
+    def __init__(self, channel_name: str):
         self.channel_name = channel_name
-        self.time_stamps = [initial_time_stamp]
+        self.time_stamps = []
 
     def add_time_stamp(self, time_stamp):
         self.time_stamps.append(time_stamp)
