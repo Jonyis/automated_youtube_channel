@@ -1,14 +1,27 @@
-from datetime import datetime, timedelta
-
 from RedditScraper import RedditScraper
 from TwitchScraper import TwitchScraper
 
 
 class ClipGetter:
 
-    def __init__(self, reddit_scrapper: RedditScraper, twitch_scrapper: TwitchScraper):
+    class ClipGetterParams:
+        def __init__(self, max_clip_count, min_view_count,
+                     max_clip_duration, reference_date,
+                     max_time_apart_from_reference_date, clip_language):
+            self.max_clip_count = max_clip_count
+            self.min_view_count = min_view_count
+            self.max_clip_duration = max_clip_duration
+            self.reference_date = reference_date
+            self.max_time_apart_from_reference_date = max_time_apart_from_reference_date
+            self.clip_language = clip_language
+
+    def __init__(self,
+                 reddit_scrapper: RedditScraper,
+                 twitch_scrapper: TwitchScraper,
+                 params: ClipGetterParams):
         self.__twitch_scrapper = twitch_scrapper
         self.__reddit_scrapper = reddit_scrapper
+        self.params = params
 
     def get_clips_from_reddit(self,
                               subReddit,
@@ -28,13 +41,7 @@ class ClipGetter:
     def get_twitch_clips_from_game(self,
                                    game=None,
                                    clips_to_get_count=1,
-                                   max_clip_count=100,
-                                   language=None,
                                    previous_clips=[],
-                                   max_time_apart_from_reference_date=timedelta(weeks=1),
-                                   reference_date=datetime.now(),
-                                   min_view_count=0,
-                                   max_clip_duration=120,
                                    last_received_cursor=None):
         list_of_posts = []
         cursor = last_received_cursor
@@ -42,13 +49,7 @@ class ClipGetter:
             clips_found, cursor = \
                 self.__do_get_twitch_clips(game=game,
                                            clips_to_get_count=clips_to_get_count,
-                                           max_clip_count=max_clip_count,
-                                           language=language,
                                            already_found_clips=previous_clips,
-                                           max_time_apart_from_reference_date=max_time_apart_from_reference_date,
-                                           reference_date=reference_date,
-                                           min_view_count=min_view_count,
-                                           max_clip_duration=max_clip_duration,
                                            last_received_cursor=cursor)
             list_of_posts += clips_found
         return list_of_posts
@@ -56,13 +57,7 @@ class ClipGetter:
     def get_twitch_clips_from_channels(self,
                                        list_of_channels=[],
                                        clips_to_get_count=1,
-                                       max_clip_count=100,
-                                       language='en',
                                        already_found_clips=[],
-                                       max_time_apart_from_reference_date=timedelta(weeks=1),
-                                       reference_date=None,
-                                       min_view_count=0,
-                                       max_clip_duration=120,
                                        last_received_cursor=None):
 
         clips_found = []
@@ -71,13 +66,7 @@ class ClipGetter:
             clips_found, cursor = \
                 self.__do_get_twitch_clips(channel=list_of_channels[0],
                                            clips_to_get_count=clips_to_get_count,
-                                           max_clip_count=max_clip_count,
-                                           language=language,
                                            already_found_clips=already_found_clips + clips_found,
-                                           max_time_apart_from_reference_date=max_time_apart_from_reference_date,
-                                           reference_date=reference_date,
-                                           min_view_count=min_view_count,
-                                           max_clip_duration=max_clip_duration,
                                            last_received_cursor=cursor)
             clips_found += clips_found
         return clips_found
@@ -87,25 +76,21 @@ class ClipGetter:
                               channel=None,
                               clip_id=None,
                               clips_to_get_count=1,
-                              max_clip_count=100,
-                              language='en',
                               already_found_clips=[],
-                              max_time_apart_from_reference_date=timedelta(weeks=1),
-                              reference_date=None,
-                              min_view_count=0,
-                              max_clip_duration=120,
                               last_received_cursor=None):
         clips_found, cursor = \
-            self.__twitch_scrapper.get_clips(channel=channel,
-                                             game=game,
-                                             clip_id=clip_id,
-                                             clips_to_get_count=clips_to_get_count,
-                                             max_clip_count=max_clip_count,
-                                             language=language,
-                                             previous_clips=already_found_clips,
-                                             max_time_apart_from_reference_date=max_time_apart_from_reference_date,
-                                             reference_date=reference_date,
-                                             min_view_count=min_view_count,
-                                             max_clip_duration=max_clip_duration,
-                                             last_received_cursor=last_received_cursor)
+            self.__twitch_scrapper.get_clips(
+                channel=channel,
+                game=game,
+                clip_id=clip_id,
+                clips_to_get_count=clips_to_get_count,
+                max_clip_count=self.params.max_clip_count,
+                language=self.params.clip_language,
+                previous_clips=already_found_clips,
+                max_time_apart_from_reference_date=
+                self.params.max_time_apart_from_reference_date,
+                reference_date=self.params.reference_date,
+                min_view_count=self.params.min_view_count,
+                max_clip_duration=self.params.max_clip_duration,
+                last_received_cursor=last_received_cursor)
         return clips_found, cursor
