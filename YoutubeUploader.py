@@ -94,7 +94,8 @@ def __get_channel_data(clipList: List[ClipData],
 
 
 def __get_clip_data(clipList: List[ClipData],
-                    intro_video_path: str) -> str:
+                    intro_video_path: str,
+                    time_stamping: bool = False) -> str:
     duration = 0
     clipString = ""
     if intro_video_path is not None:
@@ -106,7 +107,8 @@ def __get_clip_data(clipList: List[ClipData],
         roundDuration = round(duration)
         timeStamp = str(int(roundDuration / 60)).zfill(2) + ':' + str(int(roundDuration % 60)).zfill(2)
         clipName = clean_clip_title(clipInfo.title)
-        clipString += clipName + " " + timeStamp + "\n"
+        if time_stamping:
+            clipString += clipName + " " + timeStamp + "\n"
         duration += clip.duration
         clip.close()
 
