@@ -21,24 +21,23 @@ class RedditScraper:
                   topOfWhat=None,
                   minimumScore=0,
                   compareList=[],
-                  maxTimeDelta=datetime.timedelta(weeks=1)):
+                  max_clip_duration=120,
+                  reference_date=datetime.datetime.today(),
+                  max_time_apart_from_reference_date=datetime.timedelta(weeks=1)):
         listOfPosts = []
         i = 0
         j = 0
         gotMaxPosts = False
-        date = datetime.date.today().strftime("%Y-%m-%d")
-
-        time = '20:00:00.00'
-        dateCheck = datetime.datetime.strptime(date + ' ' + time, '%Y-%m-%d %H:%M:%S.%f') - datetime.timedelta(days=0,
-                                                                                                               hours=0)
-        print("Looking from posts begining at " + (
-                dateCheck - maxTimeDelta).strftime(
-            '%Y-%m-%d %H:%M:%S.%f') + " and ending at " + dateCheck.strftime('%Y-%m-%d %H:%M:%S.%f'))
+        print("Looking from posts begining at " +
+              (reference_date - max_time_apart_from_reference_date).strftime(
+                  '%Y-%m-%d %H:%M:%S.%f') + " and ending at " + reference_date.strftime('%Y-%m-%d %H:%M:%S.%f'))
         # search('selftext:"clips.twitch.tv" OR url:"clips.twitch.tv"', sort='relevance', time_filter=topOfWhat,
         # limit=None)
 
-        for submission in self.__reddit.subreddit(subReddit).search('url:"clips.twitch.tv"', sort='relevance',
-                                                                  time_filter=topOfWhat, limit=None):
+        for submission in self.__reddit.subreddit(subReddit).search('url:"clips.twitch.tv"',
+                                                                    sort='relevance',
+                                                                    time_filter=topOfWhat,
+                                                                    limit=None):
             n = re.search("https?:\/\/(?:[a-z0-9-]+\.)*clips.twitch\.tv(?:\S*)?", submission.selftext, re.IGNORECASE)
             k = submission.score
             datePosted = datetime.datetime.fromtimestamp(submission.created_utc)
@@ -46,9 +45,7 @@ class RedditScraper:
             j += 1
             print("Scanned", j, "posts", end="\r", flush=True)
 
-            totalSeconds = (dateCheck - datePosted).total_seconds()
-
-            if k >= minimumScore and maxTimeDelta.total_seconds() > totalSeconds > 0:
+            if k >= minimumScore and (reference_date - datePosted) > max_time_apart_from_reference_date:
 
                 if n:
                     url = self.__url_exctractor(n.group(0))
@@ -80,7 +77,10 @@ class RedditScraper:
                                      clip_info["language"],
                                      self.__twitch.get_twitch_games_name_by_id(clip_info["game_id"]))
 
-                if not clip_data.is_valid(dateCheck, maxTimeDelta, 2*60, compareList+listOfPosts):
+                if not clip_data.is_valid(reference_date,
+                                          max_time_apart_from_reference_date,
+                                          max_clip_duration,
+                                          compareList + listOfPosts):
                     continue
 
                 listOfPosts.append(clip_data)
