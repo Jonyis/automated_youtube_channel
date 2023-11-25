@@ -29,15 +29,16 @@ class ClipGetter:
                               topOfWhat=None,
                               minimumScore=0,
                               compareList=[]):
-        clip_list, cursor = self.__reddit_scrapper.get_clips(subReddit,
-                                                             amountOfPosts,
-                                                             topOfWhat,
-                                                             minimumScore,
-                                                             compareList,
-                                                             self.params.max_clip_duration,
-                                                             self.params.reference_date,
-                                                             self.params.max_time_apart_from_reference_date)
-        return clip_list
+        clip_list, got_all_posts_available = \
+            self.__reddit_scrapper.get_clips(subReddit,
+                                             amountOfPosts,
+                                             topOfWhat,
+                                             minimumScore,
+                                             compareList,
+                                             self.params.max_clip_duration,
+                                             self.params.reference_date,
+                                             self.params.max_time_apart_from_reference_date)
+        return clip_list, got_all_posts_available
 
     def get_twitch_clips_from_game(self,
                                    game=None,

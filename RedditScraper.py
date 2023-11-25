@@ -92,7 +92,7 @@ class RedditScraper:
         print("Scanned", j, "posts")
         print("Grabbing " + str(len(listOfPosts)) + " posts from r/" + subReddit)
         print("")
-        return listOfPosts, gotMaxPosts
+        return listOfPosts, gotMaxPosts or len(listOfPosts) == 0
 
     @staticmethod
     def __url_exctractor(urlXX):
