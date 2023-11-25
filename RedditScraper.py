@@ -45,7 +45,7 @@ class RedditScraper:
             j += 1
             print("Scanned", j, "posts", end="\r", flush=True)
 
-            if k >= minimumScore and (reference_date - datePosted) > max_time_apart_from_reference_date:
+            if k >= minimumScore and (reference_date - datePosted) < max_time_apart_from_reference_date:
 
                 if n:
                     url = self.__url_exctractor(n.group(0))
