@@ -47,8 +47,12 @@ def do_check_videos_for_duplicates(current_videos: List[VideoData], previous_vid
             else:
                 video2_frame_hashes = do_get_video_hash(video2)
                 if is_video_duplicate(video1_frame_hashes, video2_frame_hashes):
-                    print("removing video: " + video2.path)
-                    current_videos.remove(video2)
+                    if video2 in current_videos:
+                        video_to_delete = video2
+                    else:
+                        video_to_delete = video1
+                    print("removing video: " + video_to_delete.path)
+                    current_videos.remove(video_to_delete)
         video_count += 1
 
     return current_videos
